@@ -146,3 +146,145 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 DecentraLabs Gateway - System started');
     console.log('🔗 Developed by Nebulous Systems');
 });
+
+// Function to show authentication service information
+function showAuthServiceInfo() {
+    const modal = document.createElement('div');
+    modal.className = 'auth-modal';
+    modal.innerHTML = `
+        <div class="auth-modal-content">
+            <div class="auth-modal-header">
+                <h3>🔐 Authentication Service</h3>
+                <button class="close-modal" onclick="closeAuthModal()">&times;</button>
+            </div>
+            <div class="auth-modal-body">
+                <div class="auth-info">
+                    <div class="auth-status">
+                        <span class="status-icon">⚠️</span>
+                        <span class="status-message">Not Available in Lite Version</span>
+                    </div>
+                    <p>The advanced authentication service is only available in the <strong>Full Version</strong> of DecentraLabs Gateway.</p>
+                    
+                    <div class="comparison-table">
+                        <div class="comparison-row header">
+                            <div class="feature-name">Feature</div>
+                            <div class="lite-version">Lite</div>
+                            <div class="full-version">Full</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="feature-name">Laboratory Access</div>
+                            <div class="lite-version">✅</div>
+                            <div class="full-version">✅</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="feature-name">Basic Authentication</div>
+                            <div class="lite-version">✅</div>
+                            <div class="full-version">✅</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="feature-name">JWT Auth2 Service</div>
+                            <div class="lite-version">❌</div>
+                            <div class="full-version">✅</div>
+                        </div>
+                        <div class="comparison-row">
+                            <div class="feature-name">Blockchain Integration</div>
+                            <div class="lite-version">❌</div>
+                            <div class="full-version">✅</div>
+                        </div>
+                    </div>
+                    
+                    <div class="auth-actions">
+                        <a href="https://github.com/DecentraLabsCom/lite-lab-gateway" target="_blank" rel="noopener noreferrer" class="upgrade-button">
+                            <span class="btn-icon">📦</span>
+                            <span class="btn-text">Download Full Version</span>
+                            <span class="btn-arrow">↗</span>
+                        </a>
+                        <p class="auth-note">The Full Version includes a complete authentication and authorization microservice, JWT token handling, and blockchain integration capabilities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="auth-modal-overlay" onclick="closeAuthModal()"></div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    // Animation
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
+
+// Function to close authentication modal
+function closeAuthModal() {
+    const modal = document.querySelector('.auth-modal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(modal);
+            document.body.style.overflow = '';
+        }, 300);
+    }
+}
+
+// Function to show version information modal
+function showVersionInfo() {
+    const modal = document.createElement('div');
+    modal.className = 'version-modal';
+    modal.innerHTML = `
+        <div class="version-modal-content">
+            <div class="version-modal-header">
+                <h3>📋 Version Information</h3>
+                <button class="close-modal" onclick="closeVersionModal()">&times;</button>
+            </div>
+            <div class="version-modal-body">
+                <div class="version-info-modal">
+                    <div class="version-card lite">
+                        <h3>🚀 Lite Version</h3>
+                        <p>Currently running the <strong>Lite</strong> version with core laboratory access functionality.</p>
+                        <ul>
+                            <li>✅ Direct lab access via Guacamole</li>
+                            <li>✅ Basic authentication</li>
+                            <li>✅ Encrypted connections</li>
+                            <li>❌ Authentication & authorization service</li>
+                            <li>❌ Blockchain integration</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="version-card full">
+                        <h3>🔧 Full Version Available</h3>
+                        <p>Want the complete authentication service and user management?</p>
+                        <a href="https://github.com/DecentraLabsCom/full-lab-gateway" target="_blank" rel="noopener noreferrer" class="upgrade-btn">
+                            <span class="btn-icon">📦</span>
+                            <span class="btn-text">Download Full Version</span>
+                            <span class="btn-arrow">↗</span>
+                        </a>
+                        <p class="upgrade-note">Includes distributed authentication service and blockchain integration.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="version-modal-overlay" onclick="closeVersionModal()"></div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    // Animation
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+}
+
+// Function to close version modal
+function closeVersionModal() {
+    const modal = document.querySelector('.version-modal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(modal);
+            document.body.style.overflow = '';
+        }, 300);
+    }
+}

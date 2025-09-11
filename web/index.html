@@ -34,6 +34,7 @@
                     <span class="title-line">DECENTRA</span>
                     <span class="title-line highlight">LABS</span>
                     <span class="title-line subtitle">GATEWAY</span>
+                    <span class="version-badge-small">(LITE)</span>
                 </h1>
                 
                 <p class="hero-description">
@@ -56,11 +57,12 @@
                             <span class="btn-arrow">→</span>
                         </a>
                         
-                        <a href="/auth" class="access-btn secondary">
-                            <span class="btn-icon">🔐</span>
-                            <span class="btn-text">Authentication</span>
-                            <span class="btn-arrow">→</span>
-                        </a>
+                        <div class="auth-service-container">
+                            <div class="access-btn secondary disabled" onclick="showVersionInfo()">
+                                <span class="btn-icon">🔐</span>
+                                <span class="btn-text">Authentication Service</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -73,8 +75,8 @@
                     
                     <div class="feature-card">
                         <div class="feature-icon">🛡️</div>
-                        <h3>Advanced Security</h3>
-                        <p>JWT authentication and encrypted connections</p>
+                        <h3>Strong Security</h3>
+                        <p>Encrypted connections and strong authentication</p>
                     </div>
                     
                     <div class="feature-card">

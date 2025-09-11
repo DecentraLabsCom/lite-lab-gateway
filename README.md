@@ -1,6 +1,6 @@
 # 🚀 DecentraLabs Gateway
 
-A The automated setup scripts provide:
+The automated setup scripts provide:
 
 - **🔍 Prerequisites check**: Verifies Docker and Docker Compose installation
 - **🔐 Smart password management**: Auto-generates secure passwords or lets you set custom ones

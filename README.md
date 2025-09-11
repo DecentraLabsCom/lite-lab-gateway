@@ -207,7 +207,8 @@ Access: https://lab.university.edu
 ├── guacamole/                   # Guacamole container
 │   ├── Dockerfile
 │   ├── guacamole.properties
-│   └── extensions/
+│   ├── extensions/
+│   └── lib/
 ├── mysql/                       # Database initialization
 │   ├── 001-create-schema.sql
 │   ├── 002-create-admin-user.sql

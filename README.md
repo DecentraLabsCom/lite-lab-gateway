@@ -1,14 +1,5 @@
 # 🚀 DecentraLabs Gateway
 
-The automated setup scripts provide:
-
-- **🔍 Prerequisites check**: Verifies Docker and Docker Compose installation
-- **🔐 Smart password management**: Auto-generates secure passwords or lets you set custom ones
-- **🌐 Intelligent domain configuration**: Automatically configures for localhost (dev) or production
-- **📜 SSL certificate handling**: Generates self-signed certs for localhost, guides for production
-- **🚀 One-command deployment**: Starts all services automatically after configuration
-- **⚠️ Safe overwrite protection**: Asks before overwriting existing `.env` filesized remote laboratory access gateway with JWT authentication using OpenResty, Guacamole, and MySQL.
-
 ## ⚡ Quick Start
 
 ### Automated Setup (Recommended)

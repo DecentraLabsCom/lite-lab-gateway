@@ -77,6 +77,42 @@ If you prefer manual configuration:
    docker-compose up -d
    ```
 
+## 🔐 JWT Authentication Setup
+
+This lite gateway validates JWT tokens from an Authentication Service before allowing access to Guacamole.
+
+### Required Configuration
+
+1. **Environment Variables** (in `.env` file):
+   ```env
+   SERVER_NAME=yourdomain.com                    # Must match JWT 'aud' claim
+   ISSUER=https://your-auth-service.com/auth     # Must match JWT 'iss' claim
+   ```
+
+2. **Public Key** (in `certs/public_key.pem`):
+   - Must be the public key from the Auth Service
+   - Used to verify JWT token signatures
+
+### JWT Token Requirements
+
+The Auth Service must issue JWT tokens with these claims:
+
+```json
+{
+  "iss": "https://auth-service.com/auth",    # Issuer (the auth service)
+  "aud": "https://yourdomain.com/guacamole", # Audience (this gateway)
+  "sub": "username",                         # Subject (user identifier)
+  "jti": "unique-token-id",                  # JWT ID (prevents replay)
+  "exp": 1693478400,                         # Expiration timestamp
+  "iat": 1693474800                          # Issued at timestamp
+}
+```
+
+### Access URLs
+
+- **With JWT**: `https://yourdomain.com/guacamole/?jwt=YOUR_TOKEN`
+- **Direct login**: `https://yourdomain.com/guacamole/` (uses Guacamole's built-in auth)
+
 ## 🔐 SSL Certificates
 
 The setup scripts handle SSL certificates automatically:
@@ -99,13 +135,46 @@ You need valid SSL certificates. The setup script will guide you, but you need t
 - **Commercial CA**: DigiCert, GlobalSign, etc.
 
 ### JWT Public Key
-The setup script automatically generates RSA key pair for JWT validation.
 
-For manual setup:
+The `public_key.pem` file contains the **public key from the Authentication Service** that issues JWT tokens. This key is used by the gateway to verify that incoming JWT tokens are valid and haven't been tampered with.
+
+#### 🔑 Key Requirements
+
+**Important**: The `public_key.pem` must be the public key that corresponds to the private key used by the Auth Service to sign JWT tokens.
+
+#### 🔄 JWT Authentication Flow
+
+1. **Auth Service** (e.g., `https://sarlab.dia.uned.es/auth`) signs JWT tokens with its **private key**
+2. **Gateway** receives JWT tokens from users and verifies them using the **public key**
+3. If verification succeeds, the gateway allows access to Guacamole
+4. If verification fails, access is denied
+
+#### 📋 How to Obtain the Public Key
+
+**From your Auth Service provider:**
 ```bash
-openssl genrsa -out certs/jwt_private.pem 2048
-openssl rsa -in certs/jwt_private.pem -pubout -out certs/public_key.pem
+# If the auth service provides a JWKS endpoint
+curl https://your-auth-service.com/.well-known/jwks.json
+
+# If the auth service provides the public key directly
+curl https://auth-service.com/public-key.pem > certs/public_key.pem
 ```
+
+**For development/testing only or if you want to run your own auth service** (generates a new key pair):
+```bash
+# Generate private key (this is kept in the auth service)
+openssl genrsa -out jwt_private.pem 2048
+
+# Extract public key (use this in the gateway)
+openssl rsa -in jwt_private.pem -pubout -out certs/public_key.pem
+```
+
+#### ⚠️ Security Notes
+
+- **Never generate your own keys for production** - use the public key from your Auth Service
+- The private key should **only exist on your Auth Service**, never on the gateway
+- If you change keys on your Auth Service, update `public_key.pem` on the gateway
+- The gateway validates JWT claims: `iss` (issuer), `aud` (audience), `exp` (expiration), and `jti` (JWT ID)
 
 ## 🌐 Configuration Examples
 
@@ -135,10 +204,10 @@ Access: https://lab.university.edu
 ├── docker-compose.yml           # Main orchestration
 ├── .env.example                 # Environment template
 ├── setup.sh / setup.bat         # Setup scripts
-├── certs/                       # SSL certificates (not in git)
-│   ├── fullchain.pem
-│   ├── privkey.pem
-│   └── public_key.pem
+├── certs/                       # SSL certificates and keys (not in git)
+│   ├── fullchain.pem            # SSL certificate chain
+│   ├── privkey.pem              # SSL private key
+│   └── public_key.pem           # JWT verification public key (from Auth Service)
 ├── openresty/                   # NGINX + Lua proxy
 │   ├── Dockerfile
 │   ├── nginx.conf
@@ -235,5 +304,14 @@ docker exec -it dockerlabgateway-mysql-1 mysql -u guacamole_user -p guacamole_db
 **Guacamole not accessible:**
 - Check if all containers are running: `docker-compose ps`
 - Verify OpenResty configuration: `docker-compose logs openresty`
+
+**JWT Authentication issues:**
+- Verify `public_key.pem` matches the Auth Service's private key
+- Check JWT token format: `echo "JWT_TOKEN" | base64 -d` (decode payload)
+- Ensure `iss` claim matches `ISSUER` in `.env`
+- Ensure `aud` claim matches `https://SERVER_NAME/guacamole`
+- Check OpenResty logs for detailed JWT validation errors: `docker-compose logs openresty`
+- Verify token hasn't expired (`exp` claim)
+- Ensure `jti` (JWT ID) is unique for each token
 
 For more help, open an issue on GitHub.

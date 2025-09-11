@@ -77,7 +77,7 @@ This lite gateway validates JWT tokens from an Auth2 Service before allowing acc
 1. **Environment Variables** (in `.env` file):
    ```env
    SERVER_NAME=yourdomain.com                    # Must match JWT 'aud' claim
-   ISSUER=https://your-auth-service.com/auth     # Must match JWT 'iss' claim
+   ISSUER=https://auth-service.com/auth     # Must match JWT 'iss' claim
    ```
 
 2. **Public Key** (in `certs/public_key.pem`):
@@ -145,7 +145,7 @@ The `public_key.pem` file contains the **public key from the Authentication Serv
 **From your Auth Service provider:**
 ```bash
 # If the auth service provides a JWKS endpoint
-curl https://your-auth-service.com/.well-known/jwks.json
+curl https://auth-service.com/.well-known/jwks.json
 
 # If the auth service provides the public key directly
 curl https://auth-service.com/public-key.pem > certs/public_key.pem

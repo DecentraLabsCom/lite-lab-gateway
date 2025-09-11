@@ -11,7 +11,8 @@ RUN apk add --no-cache \
     build-base \
     openssl \
     git \
-    luarocks
+    luarocks \
+    curl
 
 # Instalar módulos Lua
 RUN luarocks --tree=$TREE install lua-resty-http && \

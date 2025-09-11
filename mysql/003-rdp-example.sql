@@ -1,6 +1,6 @@
 -- Create a new RDP connection in Guacamole
 INSERT INTO guacamole_connection (connection_name, protocol, max_connections, max_connections_per_user)
-VALUES ('DOBOT', 'rdp', 10, 5);
+VALUES ('RDP-Example', 'rdp', 10, 5);
 
 -- Get the ID of the newly created connection
 SET @connection_id = LAST_INSERT_ID();

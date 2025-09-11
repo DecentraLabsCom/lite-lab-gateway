@@ -17,6 +17,15 @@ services:
       - GUAC_ADMIN_PASS=${GUAC_ADMIN_PASS}
       - SERVER_NAME=${SERVER_NAME}
       - ISSUER=${ISSUER}
+    depends_on:
+      guacamole:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f -L http://localhost:80/ -H 'Host: ${SERVER_NAME}' --connect-timeout 5 --insecure"]
+      timeout: 10s
+      retries: 3
+      interval: 30s
+      start_period: 30s
     restart: always
     networks:
       - guacnet
@@ -32,7 +41,13 @@ services:
       - mysql_data:/var/lib/mysql
       - ./mysql/001-create-schema.sql:/docker-entrypoint-initdb.d/001-create-schema.sql:ro
       - ./mysql/002-create-admin-user.sql:/docker-entrypoint-initdb.d/002-create-admin-user.sql:ro
-      - ./mysql/003-rdp-DOBOT.sql:/docker-entrypoint-initdb.d/003-rdp-DOBOT.sql:ro
+      - ./mysql/003-rdp-example.sql:/docker-entrypoint-initdb.d/003-rdp-example.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
+      timeout: 20s
+      retries: 10
+      interval: 30s
+      start_period: 60s  # MySQL needs time to initialize
     #ports:
     # - "3306:3306"
     restart: always
@@ -43,24 +58,36 @@ services:
     build:
       context: ./guacamole
       dockerfile: Dockerfile
-      #ports:
-      # - "8080:8080"
     depends_on:
-      - mysql
-      - guacd
+      mysql:
+        condition: service_healthy
+      guacd:
+        condition: service_healthy
     environment:
       GUACD_HOSTNAME: guacd
     volumes:
       - ./guacamole/extensions:/etc/guacamole/extensions
-
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/guacamole/"]
+      timeout: 10s
+      retries: 5
+      interval: 30s
+      start_period: 120s  # Guacamole needs time to fully start
+    #ports:
+    # - "8080:8080"
     networks:
       - guacnet
   guacd:
     image: guacamole/guacd
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "4822"]
+      timeout: 10s
+      retries: 3
+      interval: 30s
+      start_period: 30s
     restart: always
     #ports:
     # - "4822:4822"
-
     networks:
       - guacnet
 

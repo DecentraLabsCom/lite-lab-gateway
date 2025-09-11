@@ -1,8 +1,9 @@
 # Environment files with sensitive data
 .env
-.env.local
-.env.production
-.env.staging
+.env.*
+!.env.example
+*.env
+secrets/ # Directory for secret files (in case we implement Docker Secrets)
 
 # Logs
 *.log

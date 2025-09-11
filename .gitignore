@@ -1,0 +1,38 @@
+# Environment files with sensitive data
+.env
+.env.local
+.env.production
+.env.staging
+
+# Logs
+*.log
+logs/
+
+# SSL Certificates and keys (security)
+certs/*.key
+certs/privkey.pem
+certs/fullchain.pem
+certs/*_private.pem
+
+# JWT keys (keep public key, hide private)
+certs/jwt_private.pem
+
+# Database data (persistent volume)
+mysql_data/
+
+# Temporary files
+*.tmp
+*.bak
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project specific
+MIGRATION_LOG.md

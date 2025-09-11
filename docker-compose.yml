@@ -1,0 +1,72 @@
+services:
+  openresty:
+    build:
+      context: ./openresty
+      dockerfile: Dockerfile
+    ports:
+      - "${HTTPS_PORT}:443"
+      - "${HTTP_PORT}:80"
+    volumes:
+      - ./certs:/etc/ssl/private:ro
+      - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - ./openresty/lab_access.conf:/etc/openresty/lab_access.conf:ro
+      - ./openresty/lua:/etc/openresty/lua:ro
+      - ./web:/var/www/html:ro
+    environment:
+      - GUAC_ADMIN_USER=${GUAC_ADMIN_USER}
+      - GUAC_ADMIN_PASS=${GUAC_ADMIN_PASS}
+      - SERVER_NAME=${SERVER_NAME}
+      - ISSUER=${ISSUER}
+    restart: always
+    networks:
+      - guacnet
+
+  mysql:
+    image: mysql:8.0.41
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/001-create-schema.sql:/docker-entrypoint-initdb.d/001-create-schema.sql:ro
+      - ./mysql/002-create-admin-user.sql:/docker-entrypoint-initdb.d/002-create-admin-user.sql:ro
+      - ./mysql/003-rdp-DOBOT.sql:/docker-entrypoint-initdb.d/003-rdp-DOBOT.sql:ro
+    #ports:
+    # - "3306:3306"
+    restart: always
+    networks:
+      - guacnet
+
+  guacamole:
+    build:
+      context: ./guacamole
+      dockerfile: Dockerfile
+      #ports:
+      # - "8080:8080"
+    depends_on:
+      - mysql
+      - guacd
+    environment:
+      GUACD_HOSTNAME: guacd
+    volumes:
+      - ./guacamole/extensions:/etc/guacamole/extensions
+
+    networks:
+      - guacnet
+  guacd:
+    image: guacamole/guacd
+    restart: always
+    #ports:
+    # - "4822:4822"
+
+    networks:
+      - guacnet
+
+networks:
+  guacnet:
+    driver: bridge
+
+volumes:
+  mysql_data:

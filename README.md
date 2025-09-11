@@ -70,7 +70,7 @@ If you prefer manual configuration:
 
 ## 🔐 JWT Authentication Setup
 
-This lite gateway validates JWT tokens from an Authentication Service before allowing access to Guacamole.
+This lite gateway validates JWT tokens from an Auth2 Service before allowing access to Guacamole.
 
 ### Required Configuration
 

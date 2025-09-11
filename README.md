@@ -220,7 +220,7 @@ Access: https://lab.university.edu
 ├── mysql/                       # Database initialization
 │   ├── 001-create-schema.sql
 │   ├── 002-create-admin-user.sql
-│   └── 003-rdp-DOBOT.sql
+│   └── 003-rdp-example.sql
 └── web/                         # Homepage
     ├── index.html
     └── assets/
